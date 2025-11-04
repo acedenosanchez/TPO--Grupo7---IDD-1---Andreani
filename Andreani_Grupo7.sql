@@ -69,7 +69,7 @@ CREATE TABLE Logistica.Pedido (
 		REFERENCES Logistica.ClienteDestino(ID_ClienteDestino),
 
 	CONSTRAINT CK_Pedido_Fechas CHECK (Fecha_Entrega_Sol >= Fecha_Pedido),
-	CONSTRAINT CK_Pedido_Estado CHECK (Estado IN (N'Pendiente', N'En Preparaci髇', N'Despachado', N'Entregado', N'Cancelado'))
+	CONSTRAINT CK_Pedido_Estado CHECK (Estado IN (N'Pendiente', N'En Preparaci贸n', N'Despachado', N'Entregado', N'Cancelado'))
 );
 GO
 
@@ -168,7 +168,7 @@ CREATE TABLE Logistica.Operario (
 	Turno NVARCHAR(20) NOT NULL,                     
 
 	CONSTRAINT CK_Operario_Rol CHECK (Rol IN (N'Operador', N'Supervisor', N'Auditor')),
-	CONSTRAINT CK_Operario_Turno CHECK (Turno IN (N'Ma馻na', N'Tarde', N'Noche'))
+	CONSTRAINT CK_Operario_Turno CHECK (Turno IN (N'Ma帽ana', N'Tarde', N'Noche'))
 );
 GO
 
@@ -189,4 +189,46 @@ CREATE TABLE Logistica.Validacion (
 		REFERENCES Logistica.Operario(ID_Operario),
 	CONSTRAINT CK_Validacion_Resultado CHECK (Resultado IN (N'Aprobado', N'Rechazado', N'Observado'))
 );
+GO
+
+CREATE TRIGGER Logistica.trg_AfterInsert_Consolidacion -- evita consolidar lotes vencidos o inactivos
+ON Logistica.Consolidacion
+AFTER INSERT
+AS
+BEGIN
+    IF EXISTS (
+        SELECT 1
+        FROM inserted i
+        JOIN Logistica.DetallePedido dp ON i.ID_DetallePedido = dp.ID_DetallePedido
+        JOIN Logistica.Lote l ON dp.ID_Lote = l.ID_Lote
+        WHERE l.Estado <> 'Activo' OR l.Fecha_Vencimiento < GETDATE()
+    )
+    BEGIN
+        PRINT 'Error: No se puede consolidar un lote vencido o inactivo.';
+        ROLLBACK TRANSACTION;
+        RETURN;
+    END
+
+    PRINT 'Consolidaci贸n registrada correctamente.';
+END;
+GO
+
+CREATE TRIGGER Logistica.trg_AfterInsert_Entrega -- genera una validaci贸n autom谩tica al registrar una nueva entrega
+ON Logistica.Entrega
+AFTER INSERT
+AS
+BEGIN
+    INSERT INTO Logistica.Validacion (ID_Lote, ID_Pedido, ID_Operario, Tipo_Error, Resultado)
+    SELECT 
+        dp.ID_Lote, 
+        p.ID_Pedido,
+        1 AS ID_Operario,
+        NULL AS Tipo_Error,
+        'Aprobado' AS Resultado
+    FROM inserted i
+    JOIN Logistica.Pedido p ON i.ID_Pedido = p.ID_Pedido
+    JOIN Logistica.DetallePedido dp ON p.ID_Pedido = dp.ID_Pedido;
+
+    PRINT 'Validaci贸n autom谩tica registrada por nueva entrega.';
+END;
 GO
