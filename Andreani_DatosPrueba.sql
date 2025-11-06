@@ -1,8 +1,7 @@
-﻿-- ========================================
 -- CARGA DE DATOS DE PRUEBA - ANDREANI
--- ========================================
 
--- 1️⃣ EMPRESAS CLIENTES, DESTINOS Y PRODUCTOS
+-- 1️ EMPRESAS CLIENTES, DESTINOS Y PRODUCTOS
+
 USE Andreani;
 GO
 
@@ -24,7 +23,7 @@ VALUES
 GO
 
 
--- 2️⃣ LOTES
+-- 2️ LOTES
 INSERT INTO Logistica.Lote (ID_Producto, Fecha_Ingreso, Fecha_Vencimiento, Temperatura_Almacenamiento, Estado)
 VALUES
 (1, '2025-10-01', '2027-10-01', 20.0, 'Activo'),
@@ -33,7 +32,7 @@ VALUES
 GO
 
 
--- 3️⃣ PEDIDOS
+-- 3️ PEDIDOS
 INSERT INTO Logistica.Pedido (ID_EmpresaCliente, ID_ClienteDestino, Fecha_Pedido, Fecha_Entrega_Sol, Estado)
 VALUES
 (1, 1, '2025-11-01', '2025-11-03', 'Pendiente'),
@@ -41,7 +40,7 @@ VALUES
 GO
 
 
--- 4️⃣ DETALLES DE PEDIDO
+-- 4️ DETALLES DE PEDIDO
 INSERT INTO Logistica.DetallePedido (ID_Pedido, ID_Lote, Cantidad)
 VALUES
 (1, 1, 50),
@@ -50,7 +49,7 @@ VALUES
 GO
 
 
--- 5️⃣ CAJAS Y CONSOLIDACIÓN
+-- 5️ CAJAS Y CONSOLIDACIÓN
 INSERT INTO Logistica.Caja (Codigo_QR, Peso, Volumen, ID_ClienteDestino)
 VALUES
 ('QR001', 15.5, 0.30, 1),
@@ -65,7 +64,7 @@ VALUES
 GO
 
 
--- 6️⃣ VEHÍCULOS Y RUTAS
+-- 6️ VEHÍCULOS Y RUTAS
 INSERT INTO Logistica.Vehiculo (Patente, Tipo, Capacidad, Refrigerado, Chofer)
 VALUES
 ('AB123CD', 'Camión', 3500.00, 1, 'Carlos Gómez'),
@@ -79,7 +78,7 @@ VALUES
 GO
 
 
--- 7️⃣ ENTREGAS
+-- 7️ ENTREGAS
 INSERT INTO Logistica.Entrega (ID_Pedido, ID_Vehiculo, ID_Ruta, Fecha_Salida, Fecha_Entrega, Temp_Entrega, Conformidad)
 VALUES
 (1, 1, 1, '2025-11-03 08:00', '2025-11-03 12:30', 5.0, 1),
@@ -87,7 +86,7 @@ VALUES
 GO
 
 
--- 8️⃣ OPERARIOS Y VALIDACIONES
+-- 8️ OPERARIOS Y VALIDACIONES
 INSERT INTO Logistica.Operario (Nombre, Rol, Turno)
 VALUES
 ('Juan Torres', 'Operador', 'Mañana'),
