@@ -19,11 +19,11 @@ BEGIN
         RETURN;
     END
 
-    PRINT 'Consolidación registrada correctamente.';
+    PRINT 'ConsolidaciÃ³n registrada correctamente.';
 END;
 GO
 
-CREATE TRIGGER Logistica.trg_AfterInsert_Entrega -- genera una validación automática al registrar una nueva entrega
+CREATE TRIGGER Logistica.trg_AfterInsert_Entrega -- genera una validaciÃ³n automÃ¡tica al registrar una nueva entrega
 ON Logistica.Entrega
 AFTER INSERT
 AS
@@ -39,6 +39,6 @@ BEGIN
     JOIN Logistica.Pedido p ON i.ID_Pedido = p.ID_Pedido
     JOIN Logistica.DetallePedido dp ON p.ID_Pedido = dp.ID_Pedido;
 
-    PRINT 'Validación automática registrada por nueva entrega.';
+    PRINT 'ValidaciÃ³n automÃ¡tica registrada por nueva entrega.';
 END;
 GO
