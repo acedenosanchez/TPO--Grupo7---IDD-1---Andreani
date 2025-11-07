@@ -1,5 +1,5 @@
-/* CREATE DATABASE Andreani; 
-GO */ -- CREAMOS LA BASE DE DATOS Andreani
+CREATE DATABASE Andreani; 
+GO
 
 USE Andreani;
 GO
